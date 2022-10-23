@@ -1,0 +1,17 @@
+{
+  "Nickname": "Coup d'Gras - Grass FPS Enhancer",
+  "Visibility": "Visible",
+  "OneLineDescription": "",
+  "LongDescription": "",
+  "PreferredAutoVersioning": "Default",
+  "RequiredMods": [],
+  "TargetedReleases": [
+    "Oblivion",
+    "SkyrimLE",
+    "SkyrimSE",
+    "SkyrimVR",
+    "Fallout4",
+    "EnderalLE",
+    "EnderalSE"
+  ]
+}
