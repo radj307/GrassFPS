@@ -29,9 +29,6 @@ jobs:
     - name:   'Publish Binaries to Directory'
       run:    dotnet publish ${{env.PROJECT_NAME}} -c ${{env.BUILD_TYPE}} /p:PublishProfile="${{env.PROJECT_NAME}}/Properties/PublishProfiles/FolderProfile.pubxml"
 
-    - name:   'Create Staging Directory'
-      run:    mkdir "STAGING"
-
     - name:   Stage Files
       run:    |
               foreach($file in $((dir "publish" -recurse | where {$_.extension -in ".exe"}).Fullname)){ mv "$file" "STAGING" }
