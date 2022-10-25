@@ -1,7 +1,8 @@
 using GrassFPS.Extensions;
+using GrassFPS.Settings.Interfaces;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 
-namespace GrassFPS.ViewModel
+namespace GrassFPS.Settings.ViewModel
 {
     public enum EnumFlagOperationType : byte
     {
@@ -23,7 +24,7 @@ namespace GrassFPS.ViewModel
     /// <remarks>
     /// This is used by <see cref="EnumFlagSetting{T}"/>.
     /// </remarks>
-    public class EnumFlagOperation<T> : IGetValueOrAlternative<T> where T : Enum
+    public class EnumFlagOperation<T> : ICalculateValueFrom<T> where T : Enum
     {
         #region Constructors
         public EnumFlagOperation(T value) => Flag = value;
@@ -47,9 +48,9 @@ namespace GrassFPS.ViewModel
         }
         #endregion Properties
 
-        public T GetValueOrAlternative(T inputValue, out bool changed)
+        public T CalculateValueFrom(T inputValue, out bool changed)
         {
-            var val = Operator switch
+            T? val = Operator switch
             {
                 EnumFlagOperationType.Disable => inputValue.BitwiseAND(Flag.BitwiseNOT()),
                 EnumFlagOperationType.Enable or EnumFlagOperationType.BitwiseOR => inputValue.BitwiseOR(Flag),
@@ -65,22 +66,23 @@ namespace GrassFPS.ViewModel
     /// Provides a user-editable enum flag ViewModel.
     /// </summary>
     /// <typeparam name="T"><see cref="Enum"/> type.</typeparam>
-    public class EnumFlagSetting<T> : IGetValueOrAlternative<T> where T : Enum
+    public class EnumFlagSetting<T> : ICalculateValueFrom<T> where T : Enum
     {
-        [Tooltip("This MUST be checked to apply the Flag Changes to records. When unchecked, the associated Flag Changes property is skipped, and no changes are made to the original value.")]
-        public bool EnableProperty = false;
         [Tooltip("Flag changes are applied in sequential order. Actions that start with \"Bitwise\" are for advanced users.")]
         public List<EnumFlagOperation<T>> FlagChanges = new();
 
-        public T GetValueOrAlternative(T inputValue, out bool changed)
+        public T ApplyFlagChangesTo(T input)
         {
-            var val = inputValue;
+            T? val = input;
 
-            foreach (var action in FlagChanges)
-            {
-                val = action.GetValueOrAlternative(val, out _);
-            }
+            FlagChanges.ForEach(a => val = a.CalculateValueFrom(val));
 
+            return val;
+        }
+
+        public T CalculateValueFrom(T inputValue, out bool changed)
+        {
+            T? val = this.ApplyFlagChangesTo(inputValue);
             changed = !val.Equals(inputValue);
             return val;
         }

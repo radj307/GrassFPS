@@ -20,7 +20,7 @@ namespace GrassFPS.Settings
                     identifier: "Windy Grass",
                     filters: new()
                     {
-                        EditorIDRegex = new()
+                        EditorIDRegexWhitelist = new()
                         {
                             "Windy",
                         }
@@ -35,5 +35,8 @@ namespace GrassFPS.Settings
         public List<GrassSettings> Grass;
 
         public GlobalFilters GlobalFilters;
+
+        [Tooltip("Controls the behaviour of the regular expression engine.")]
+        public RegexProvider RegexSettings = RegexProvider.Default;
     };
 }

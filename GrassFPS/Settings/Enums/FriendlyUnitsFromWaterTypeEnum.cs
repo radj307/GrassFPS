@@ -1,11 +1,11 @@
 using Mutagen.Bethesda.Skyrim;
 
-namespace GrassFPS.Settings.Workarounds
+namespace GrassFPS.Settings.Enums
 {
     /// <remarks>
     /// This is a copy of <see cref="Grass.UnitsFromWaterTypeEnum"/> that is here to fix a CTD bug with the Synthesis client (UI version 0.24.1) when running the patch.<br/>
     /// </remarks>
-    public enum UFWE
+    public enum FriendlyUnitsFromWaterTypeEnum
     {
         AboveAtLeast = 0,
         AboveAtMost = 1,

@@ -1,0 +1,20 @@
+/*
+* This file is to be used with the Synthesis UI.
+*
+* To use this file, first install and download Synthesis:
+* https://github.com/Mutagen-Modding/Synthesis/releases
+*
+* Then double clicking this file will add the desired patcher to the application.  
+* This file alone does not do much and is not necessary.  It is just one way of many to add patchers to Synthesis.
+* 
+* More detailed instructions can be found here:
+* https://github.com/Mutagen-Modding/Synthesis/wiki/Typical-Usage#using-synth-files
+*
+*/
+
+{
+  "AddGitPatcher": {
+    "Url": "https://github.com/radj307/GrassFPS",
+    "SelectedProject": "GrassFPS\\GrassFPS.csproj"
+  }
+}

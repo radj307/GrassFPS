@@ -1,4 +1,4 @@
-namespace GrassFPS.ViewModel
+namespace GrassFPS.Settings.Interfaces
 {
     /// <summary>
     /// Represents a type that provides the <see cref="GetValueOrAlternative(T, out bool)"/> method.

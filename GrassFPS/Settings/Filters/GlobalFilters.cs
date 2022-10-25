@@ -1,10 +1,11 @@
+using GrassFPS.Settings.Interfaces;
 using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 
 namespace GrassFPS.Settings.Filters
 {
-    public class GlobalFilters
+    public class GlobalFilters : IFilter<FormKey>
     {
         [Tooltip("Grass records added by any of the listed plugins are ignored.")]
         public List<ModKey> ModBlacklist = new();
@@ -16,11 +17,16 @@ namespace GrassFPS.Settings.Filters
         [Tooltip("Global blacklist for specific individual grass records.")]
         public List<FormLink<IGrassGetter>> RecordBlacklist = new();
 
+        #region Methods
         private bool IsApplicableTo(ModKey modKey)
             => !ModBlacklist.Contains(modKey)
             && (!EnableModWhitelist || ModWhitelist.Contains(modKey));
-        public bool IsApplicableTo(FormKey formKey)
-            => IsApplicableTo(formKey.ModKey)
+        private bool IsApplicableTo(FormKey formKey)
+            => this.IsApplicableTo(formKey.ModKey)
             && !RecordBlacklist.Contains(formKey);
+
+        public bool FilterAllows(FormKey inst) => this.IsApplicableTo(inst);
+        public bool FilterDisallows(FormKey inst) => !this.IsApplicableTo(inst);
+        #endregion Methods
     }
 }
