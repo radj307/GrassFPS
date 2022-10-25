@@ -4,6 +4,7 @@ name: Generate Release
 on:
   push:
     tags: [ '*.*.*' ]
+  workflow_dispatch:
     
 # Configuration Type
 env:
