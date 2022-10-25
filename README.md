@@ -1,7 +1,7 @@
-# Coup d'`GRAS` - Grass FPS Enhancer
+# Grass FPS Enhancer - (Coup d'`GRAS`)
 
-Synthesis patcher that improves your framerate by optimizing grass in the same way as mods like **Grass FPS Booster** &amp; **Grass on Steroids**.  
-The advantage of using Synthesis is that you don't have to worry about patches, since the resulting plugin is tailored to your specific load order.  
+Synthesis patcher that improves your framerate by optimizing grass *(`GRAS`)* records in the same way as mods like **Grass FPS Booster** &amp; **Grass on Steroids**. The advantage of using Synthesis is that you don't have to worry about patches, since the resulting plugin is tailored to your specific load order.  
+
 Now you can mix & match grass mods without worrying about optimization patches!
 
 Like many of my other patchers, this uses categories & filters to apply values to specific records.  
