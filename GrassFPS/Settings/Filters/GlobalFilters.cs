@@ -2,6 +2,7 @@ using GrassFPS.Settings.Interfaces;
 using Mutagen.Bethesda.Plugins;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
+using System.Collections.Generic;
 
 namespace GrassFPS.Settings.Filters
 {

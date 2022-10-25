@@ -1,7 +1,8 @@
-﻿using GrassFPS.Extensions;
+using GrassFPS.Extensions;
 using GrassFPS.Settings.Enums;
-using GrassFPS.Settings.ViewModel;
+using GrassFPS.Synth;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
+using System;
 using System.Text.RegularExpressions;
 
 namespace GrassFPS.Settings
@@ -18,24 +19,24 @@ namespace GrassFPS.Settings
         #region Fields
         [SettingName("Match Options")]
         [Tooltip("Configures options for all regular expressions.")]
-        public EnumFlagSetting<FriendlyRegexOptions> RegexOptions = new()
+        public FlagSetting<FriendlyRegexOptions> RegexOptions = new()
         {
             FlagChanges = new()
             {
                 new()
                 {
                     Flag = FriendlyRegexOptions.Singleline,
-                    Operator = EnumFlagOperationType.Enable
+                    Operator = FlagOperationType.Enable
                 },
                 new()
                 {
                     Flag = FriendlyRegexOptions.Compiled,
-                    Operator = EnumFlagOperationType.Enable
+                    Operator = FlagOperationType.Enable
                 },
                 new()
                 {
                     Flag = FriendlyRegexOptions.IgnoreCase,
-                    Operator = EnumFlagOperationType.Enable
+                    Operator = FlagOperationType.Enable
                 }
             }
         };

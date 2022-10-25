@@ -1,4 +1,6 @@
-namespace GrassFPS.Extensions
+using System;
+
+namespace GrassFPS.Synth
 {
     /// <summary>
     /// Extends <see cref="Enum"/>-based types with support for bitwise operations.<br/>

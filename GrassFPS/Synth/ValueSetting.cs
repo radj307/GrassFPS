@@ -1,23 +1,35 @@
-using GrassFPS.Extensions;
-using GrassFPS.Settings.Interfaces;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 
-namespace GrassFPS.Settings.ViewModel
+namespace GrassFPS.Synth
 {
     /// <summary>
     /// Wrapper object for a single value of type <typeparamref name="T"/> that also exposes a boolean that allows the user to disable the application of the value.
     /// </summary>
+    /// <remarks>
+    /// See <see cref="ClassSetting{T}"/>, <see cref="StructSetting{T}"/>, &amp; <see cref="EnumSetting{T}"/> for ready-to-use classes that implement <see cref="ValueSetting{T}"/>.
+    /// </remarks>
     /// <typeparam name="T">The value type to wrap.</typeparam>
     public abstract class ValueSetting<T> : IGetValueOrAlternative<T>
     {
+        /// <summary>
+        /// Creates a new <see cref="ValueSetting{T}"/> instance.
+        /// </summary>
+        /// <param name="enableProperty"><see cref="EnableProperty"/></param>
+        /// <param name="value"><see cref="Value"/></param>
         public ValueSetting(bool enableProperty, T value)
         {
             EnableProperty = enableProperty;
             Value = value;
         }
 
+        /// <summary>
+        /// When <see langword="true"/>, the setting is enabled; otherwise it is disabled. This setting's <see cref="Value"/> field is only applied to records when this is enabled.
+        /// </summary>
         [Tooltip("This MUST be checked to apply the Value to records. When unchecked, the associated Value property is skipped, and no changes are made to the original value.")]
         public bool EnableProperty = false;
+        /// <summary>
+        /// The current value of this setting.
+        /// </summary>
         public T Value;
 
         /// <summary>
@@ -31,20 +43,5 @@ namespace GrassFPS.Settings.ViewModel
             changed = !defaultValue!.Equals(val);
             return val;
         }
-    }
-    public class ClassValueSetting<T> : ValueSetting<T> where T : class, new()
-    {
-        public ClassValueSetting() : base(false, new()) { }
-        public ClassValueSetting(T? value) : base(value is not null, value ?? new()) { }
-    }
-    public class StructValueSetting<T> : ValueSetting<T> where T : struct
-    {
-        public StructValueSetting() : base(false, default) { }
-        public StructValueSetting(T? value) : base(value is not null, value ?? default) { }
-    }
-    public class EnumValueSetting<T> : ValueSetting<T> where T : Enum
-    {
-        public EnumValueSetting() : base(false, 0.ToEnum<T>()) { }
-        public EnumValueSetting(T? value) : base(value is not null, value ?? 0.ToEnum<T>()) { }
     }
 }

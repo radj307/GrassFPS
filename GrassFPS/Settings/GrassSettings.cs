@@ -2,10 +2,11 @@ using GrassFPS.Extensions;
 using GrassFPS.Settings.Enums;
 using GrassFPS.Settings.Filters;
 using GrassFPS.Settings.Interfaces;
-using GrassFPS.Settings.ViewModel;
+using GrassFPS.Synth;
 using Mutagen.Bethesda.Plugins.Records;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
+using System;
 
 namespace GrassFPS.Settings
 {
@@ -27,7 +28,7 @@ namespace GrassFPS.Settings
             WavePeriod = new();
             Flags = new();
         }
-        public GrassSettings(string identifier = "", RecordFilters<Grass, IGrassGetter>? filters = null, sbyte? density = null, sbyte? minSlope = null, sbyte? maxSlope = null, ushort? unitsFromWater = null, Grass.UnitsFromWaterTypeEnum? unitsFromWaterType = null, float? positionRange = null, float? heightRange = null, float? colorRange = null, float? wavePeriod = null, Grass.Flag? flags = null)
+        public GrassSettings(string identifier = "", RecordFilters<Grass, IGrassGetter>? filters = null, short? density = null, short? minSlope = null, short? maxSlope = null, ushort? unitsFromWater = null, Grass.UnitsFromWaterTypeEnum? unitsFromWaterType = null, float? positionRange = null, float? heightRange = null, float? colorRange = null, float? wavePeriod = null, Grass.Flag? flags = null)
         {
             Identifier = identifier;
             RecordFilters = filters ?? new();
@@ -42,7 +43,7 @@ namespace GrassFPS.Settings
             WavePeriod = new(wavePeriod);
             Flags = new();
             if (flags is not null)
-                Flags.FlagChanges.Add(new(EnumFlagOperationType.Overwrite, flags.Value));
+                Flags.FlagChanges.Add(new(FlagOperationType.Overwrite, flags.Value));
         }
         #endregion Constructors
 
@@ -53,26 +54,26 @@ namespace GrassFPS.Settings
         public bool OffsetMode = false;
         [Tooltip("For a category to be applied to a record, the record must match any part of the filter at least once. All applicable categories are applied in order to each record.")]
         public RecordFilters<Grass, IGrassGetter> RecordFilters;
-        [Tooltip("Final value must be within range: (Min=0, Max=255)\n" + @"GRAS\DATA - Data\Density")]
-        public StructValueSetting<short> Density;  //< uses short instead of byte for offset mode
-        [Tooltip("Final value must be within range: (Min=0, Max=255)\n" + @"GRAS\DATA - Data\Min Slope")]
-        public StructValueSetting<short> MinSlope; //< uses short instead of byte for offset mode
-        [Tooltip("Final value must be within range: (Min=0, Max=255)\n" + @"GRAS\DATA - Data\Max Slope")]
-        public StructValueSetting<short> MaxSlope; //< uses short instead of byte for offset mode
+        [Tooltip(@"GRAS\DATA - Data\Density" + "\nFinal value must be within range: (Min=0, Max=255)")]
+        public StructSetting<short> Density;  //< uses short instead of byte for offset mode
+        [Tooltip(@"GRAS\DATA - Data\Min Slope" + "\nFinal value must be within range: (Min=0, Max=255)")]
+        public StructSetting<short> MinSlope; //< uses short instead of byte for offset mode
+        [Tooltip(@"GRAS\DATA - Data\Max Slope" + "\nFinal value must be within range: (Min=0, Max=255)")]
+        public StructSetting<short> MaxSlope; //< uses short instead of byte for offset mode
         [Tooltip(@"GRAS\DATA - Data\Units From Water")]
-        public StructValueSetting<int> UnitsFromWater; //< uses int instead of ushort for offset mode
+        public StructSetting<int> UnitsFromWater; //< uses int instead of ushort for offset mode
         [Tooltip(@"GRAS\DATA - Data\Units From Water Type")]
-        public StructValueSetting<FriendlyUnitsFromWaterTypeEnum> UnitsFromWaterType;
+        public StructSetting<FriendlyUnitsFromWaterTypeEnum> UnitsFromWaterType;
         [Tooltip(@"GRAS\DATA - Data\Position Range")]
-        public StructValueSetting<float> PositionRange;
+        public StructSetting<float> PositionRange;
         [Tooltip(@"GRAS\DATA - Data\Height Range")]
-        public StructValueSetting<float> HeightRange;
+        public StructSetting<float> HeightRange;
         [Tooltip(@"GRAS\DATA - Data\Color Range")]
-        public StructValueSetting<float> ColorRange;
+        public StructSetting<float> ColorRange;
         [Tooltip(@"GRAS\DATA - Data\Wave Period")]
-        public StructValueSetting<float> WavePeriod;
+        public StructSetting<float> WavePeriod;
         [Tooltip(@"GRAS\DATA - Data\Flags")]
-        public EnumFlagSetting<Grass.Flag> Flags;
+        public FlagSetting<Grass.Flag> Flags;
         #endregion Fields
 
         #region TrueTrap
