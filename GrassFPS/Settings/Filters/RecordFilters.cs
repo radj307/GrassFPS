@@ -37,7 +37,7 @@ namespace GrassFPS.Settings.Filters
 
         private bool HasAnyMatch(IMajorRecordGetter getter)
         {
-            bool hasAnyMatch = IsMatch(getter.FormKey) || (getter.EditorID is not null && IsMatch(getter.EditorID));
+            bool hasAnyMatch = this.IsMatch(getter.FormKey) || (getter.EditorID is not null && this.IsMatch(getter.EditorID));
             return IsBlacklist
                 ? !hasAnyMatch
                 : hasAnyMatch;

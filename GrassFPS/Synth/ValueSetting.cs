@@ -11,6 +11,7 @@ namespace GrassFPS.Synth
     /// <typeparam name="T">The value type to wrap.</typeparam>
     public abstract class ValueSetting<T> : IGetValueOrAlternative<T>
     {
+        #region Constructor
         /// <summary>
         /// Creates a new <see cref="ValueSetting{T}"/> instance.
         /// </summary>
@@ -21,7 +22,13 @@ namespace GrassFPS.Synth
             EnableProperty = enableProperty;
             Value = value;
         }
+        #endregion Constructor
 
+        #region Operators
+        public static implicit operator T(ValueSetting<T> valueSetting) => valueSetting.Value;
+        #endregion Operators
+
+        #region Fields
         /// <summary>
         /// When <see langword="true"/>, the setting is enabled; otherwise it is disabled. This setting's <see cref="Value"/> field is only applied to records when this is enabled.
         /// </summary>
@@ -31,7 +38,9 @@ namespace GrassFPS.Synth
         /// The current value of this setting.
         /// </summary>
         public T Value;
+        #endregion Fields
 
+        #region Methods
         /// <summary>
         /// Gets the value of <see cref="Value"/> if it is <b>not</b> <see langword="null"/>.
         /// </summary>
@@ -43,5 +52,6 @@ namespace GrassFPS.Synth
             changed = !defaultValue!.Equals(val);
             return val;
         }
+        #endregion Methods
     }
 }

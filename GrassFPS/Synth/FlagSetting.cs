@@ -50,7 +50,7 @@ namespace GrassFPS.Synth
     /// Provides a user-editable enum flag ViewModel.
     /// </summary>
     /// <typeparam name="T"><see cref="Enum"/> type.</typeparam>
-    public class FlagSetting<T> : ICalculateValueFrom<T> where T : Enum
+    public class FlagSetting<T> : ICalculateValueFrom<T> where T : struct, Enum
     {
         #region Constructors
         public FlagSetting() => FlagChanges = new();
@@ -73,7 +73,8 @@ namespace GrassFPS.Synth
             #endregion Constructors
 
             #region Properties
-            [Tooltip($"Selects the flag to modify. This does nothing when the operator is set to '{nameof(FlagOperationType.BitwiseNOT)}'.")]
+            [Tooltip("Selects which Flag value to operate with.\n" +
+                "Each item in this list corresponds to an individual bit in the underlying binary value.")]
             public T Flag;
             /// <summary>
             /// Determines the operator to use in the expression.
@@ -81,13 +82,14 @@ namespace GrassFPS.Synth
             /// <remarks>
             /// <b>Default: <see cref="FlagOperationType.Enable"/></b>
             /// </remarks>
-            [Tooltip($"Simple operators like '{nameof(FlagOperationType.Enable)}'/'{nameof(FlagOperationType.Disable)}'/'{nameof(FlagOperationType.Overwrite)}' are self-explanatory.\nFor Bitwise operators, the existing flag value is always on the left side of the operation while the 'Flag' value is always on the right side.\nThe BitwiseNOT operator never uses the 'Flag' value since it is a unary operator.")]
+            [Tooltip($"Enable    \tEnables the specified {nameof(Flag)}.\n" +
+                     $"Disable   \tDisables the specified {nameof(Flag)}.\n" +
+                     $"Overwrite \tEnables the specified {nameof(Flag)} & disables all other flags.\n" +
+                      "BitwiseOR \tBitwise binary OR  operator\t{EXISTING} | {this.Flag}\n" +
+                      "BitwiseAND\tBitwise binary AND operator\t{EXISTING} & {this.Flag}\n" +
+                      "BitwiseXOR\tBitwise binary XOR operator\t{EXISTING} ^ {this.Flag}\n" +
+                      "BitwiseNOT\tBitwise unary  NOT operator\t~{EXISTING}")]
             public FlagOperationType Operator = FlagOperationType.Enable;
-            internal int IntValue
-            {
-                get => Flag.ToInt();
-                set => Flag = value.ToEnum<T>();
-            }
             #endregion Properties
 
             #region GetOperationResult
@@ -124,14 +126,8 @@ namespace GrassFPS.Synth
         #endregion Operation
 
         #region Fields
-        [Tooltip("A list of changes to make to the current flag value.\n\n" +
-            "Enable      Enables the specified Flag.\n" +
-            "Disable     Disables the specified flag.\n" +
-            "Overwrite   Overwrites the current flags with the specified flag, removing all other flags in the process.\n" +
-            "BitwiseOR   Bitwise binary OR  operator `{{EXISTING_VALUE}} | {{Flag}}`\n" +
-            "BitwiseAND  Bitwise binary AND operator `{{EXISTING_VALUE}} & {{Flag}}`\n" +
-            "BitwiseXOR  Bitwise binary XOR operator `{{EXISTING_VALUE}} ^ {{Flag}}`\n" +
-            "BitwiseNOT  Bitwise unary  NOT operator `~{{EXISTING_VALUE}}`")]
+        [Tooltip("A list of operations to perform on the current flag value.\n" +
+            "Flags are variables where each bit of the underlying binary value represents an ON/OFF switch with a distinct meaning.")]
         public List<Operation> FlagChanges;
         #endregion Fields
 
@@ -141,16 +137,21 @@ namespace GrassFPS.Synth
             if (FlagChanges.Count.Equals(0))
                 return input;
 
-            T? val = input;
+            T val = input;
 
-            FlagChanges.ForEach(a => val = a.CalculateValueFrom(val));
+            FlagChanges.ForEach(a => val = a.CalculateValueFrom(val, out _));
 
             return val;
         }
-        public T CalculateValueFrom(T inputValue, out bool changed)
+        public T CalculateValueFrom(T input, out bool changed)
         {
-            T? val = this.ApplyFlagChangesTo(inputValue);
-            changed = !val.Equals(inputValue);
+            if (FlagChanges.Count.Equals(0))
+            {
+                changed = false;
+                return input;
+            }
+            T val = this.ApplyFlagChangesTo(input);
+            changed = !val.Equals(input);
             return val;
         }
         #endregion Methods
