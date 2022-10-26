@@ -8,32 +8,25 @@ namespace GrassFPS.Settings
     {
         public TopLevelSettings()
         {
-            Grass = new()
+            GrassCategories = new()
             {
                 new GrassSettings(
-                    identifier: "Default",
-                    filters: new() { ApplyToAll = true },
+                    identifier: "Grass",
+                    filters: new() { EDIDRegex = new() { "(?i)grass" } },
                     density: 80,
                     maxSlope: 90,
                     positionRange: 1f
                 ),
                 new GrassSettings(
                     identifier: "Windy Grass",
-                    filters: new()
-                    {
-                        EditorIDRegexWhitelist = new()
-                        {
-                            "Windy",
-                        }
-                    },
+                    filters: new() { EDIDRegex = new() { "(?i)windy" } },
                     wavePeriod: 300
                 ),
             };
             GlobalFilters = new();
         }
 
-        [Tooltip("(Click my name to add or remove entries) Each entry represents a single set of changes that can be made to [GRAS] records. You can use filters to control which records are changed by an entry.")]
-        public List<GrassSettings> Grass;
+        public List<GrassSettings> GrassCategories;
 
         public GlobalFilters GlobalFilters;
 

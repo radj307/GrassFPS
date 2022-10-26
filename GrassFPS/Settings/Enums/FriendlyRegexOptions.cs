@@ -12,7 +12,6 @@ namespace GrassFPS.Settings.Enums
         IgnoreCase = 1,
         ExplicitCapture = 4,
         Compiled = 8,
-        Singleline = 16,
         IgnorePatternWhitespace = 32,
         RightToLeft = 64,
         CultureInvariant = 512

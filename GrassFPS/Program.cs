@@ -4,6 +4,7 @@ using Mutagen.Bethesda.Fallout4;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Synthesis;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GrassFPS
@@ -26,18 +27,40 @@ namespace GrassFPS
                 if (grassGetter is null || !Settings.GlobalFilters.FilterAllows(grassGetter.FormKey))
                     continue;
 
-                foreach (GrassSettings? settingsGroup in Settings.Grass)
+                Mutagen.Bethesda.Skyrim.Grass? copy = null;
+                bool wasChanged = false;
+                List<(string, bool)> matchingCategoryMeta = new();
+
+                foreach (GrassSettings category in Settings.GrassCategories)
                 {
-                    if (!settingsGroup.HasAnyEnabledValues() || settingsGroup.FilterDisallows(grassGetter))
+                    if (!category.HasAnyEnabledValues() || category.FilterDisallows(grassGetter))
                         continue;
 
-                    Mutagen.Bethesda.Skyrim.Grass? copy = settingsGroup.ApplySettingTo(grassGetter, out bool valueChanged);
+                    copy = category.ApplySettingTo(grassGetter, out bool valueChanged);
 
-                    if (valueChanged)
+                    matchingCategoryMeta.Add((category.Identifier, valueChanged));
+                    wasChanged = valueChanged || wasChanged;
+                }
+
+                if (copy is null || matchingCategoryMeta.Count.Equals(0))
+                    continue;
+
+                Console.WriteLine($"\"{copy.EditorID}\" [GRAS:{copy.FormKey.IDString()}] matches categor{(matchingCategoryMeta.Count.Equals(1) ? "y" : "ies")}:");
+
+                foreach ((string name, bool madeChanges) in matchingCategoryMeta)
+                {
+                    Console.Write($"  - \"{name}\"");
+                    if (madeChanges)
                     {
-                        state.PatchMod.Grasses.Set(copy);
-                        Console.WriteLine($"Modified \"{copy.EditorID}\" using values from \"{settingsGroup.Identifier}\"");
+                        Console.WriteLine();
+                        continue;
                     }
+                    Console.WriteLine("\t (no changes)");
+                }
+
+                if (wasChanged)
+                {
+                    state.PatchMod.Grasses.Set(copy);
                 }
             }
         }

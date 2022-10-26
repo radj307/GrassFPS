@@ -46,10 +46,6 @@ namespace GrassFPS.Synth
     #endregion FlagOperationType
 
     #region FlagSetting
-    public class ObjectTypeMember : ObjectNameMember
-    {
-        public ObjectTypeMember(Type type) : base(type.Name) { }
-    }
     /// <summary>
     /// Provides a user-editable enum flag ViewModel.
     /// </summary>
@@ -58,7 +54,7 @@ namespace GrassFPS.Synth
     {
         #region Constructors
         public FlagSetting() => FlagChanges = new();
-        public FlagSetting(IEnumerable<Operation> flagChanges) => FlagChanges = flagChanges.ToList();
+        public FlagSetting(IEnumerable<Operation>? flagChanges) => FlagChanges = flagChanges?.ToList() ?? new();
         #endregion Constructors
 
         #region Operation
@@ -135,13 +131,16 @@ namespace GrassFPS.Synth
             "BitwiseOR   Bitwise binary OR  operator `{{EXISTING_VALUE}} | {{Flag}}`\n" +
             "BitwiseAND  Bitwise binary AND operator `{{EXISTING_VALUE}} & {{Flag}}`\n" +
             "BitwiseXOR  Bitwise binary XOR operator `{{EXISTING_VALUE}} ^ {{Flag}}`\n" +
-            "BitwiseNOT  Bitwise unary  NOT operator `~{{EXISTING_VALUE}}`\n")]
+            "BitwiseNOT  Bitwise unary  NOT operator `~{{EXISTING_VALUE}}`")]
         public List<Operation> FlagChanges;
         #endregion Fields
 
         #region Methods
         public T ApplyFlagChangesTo(T input)
         {
+            if (FlagChanges.Count.Equals(0))
+                return input;
+
             T? val = input;
 
             FlagChanges.ForEach(a => val = a.CalculateValueFrom(val));

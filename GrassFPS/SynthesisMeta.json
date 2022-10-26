@@ -1,5 +1,5 @@
 {
-  "Nickname": "Grass FPS Enhancer",
+  "Nickname": "Grass FPS",
   "Visibility": "Visible",
   "OneLineDescription": "A patcher alternative to mods like Grass FPS Booster.",
   "LongDescription": "# Grass FPS Enhancer - (Coup d'`GRAS`)\n\nSynthesis patcher that improves your framerate by optimizing grass in the same way as mods like **Grass FPS Booster** &amp; **Grass on Steroids**.\nThe advantage of using Synthesis is that you don't have to worry about patches, since the resulting plugin is tailored to your specific load order.\nNow you can mix & match grass mods without worrying about optimization patches!\n\nLike many of my other patchers, this uses categories & filters to apply values to specific records.\nThis allows you to build your own dynamic grass mod without any programming experience.",

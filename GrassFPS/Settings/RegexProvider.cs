@@ -9,7 +9,9 @@ namespace GrassFPS.Settings
 {
     public class RegexProvider
     {
+        #region Default
         public static RegexProvider Default { get; } = new();
+        #endregion Default
 
         #region Definitions
         private static readonly FriendlyRegexOptions DefaultRegexOptions = 0;
@@ -25,17 +27,7 @@ namespace GrassFPS.Settings
             {
                 new()
                 {
-                    Flag = FriendlyRegexOptions.Singleline,
-                    Operator = FlagOperationType.Enable
-                },
-                new()
-                {
                     Flag = FriendlyRegexOptions.Compiled,
-                    Operator = FlagOperationType.Enable
-                },
-                new()
-                {
-                    Flag = FriendlyRegexOptions.IgnoreCase,
                     Operator = FlagOperationType.Enable
                 }
             }
@@ -43,9 +35,7 @@ namespace GrassFPS.Settings
         [SettingName("Timeout (ms)")]
         [Tooltip("Sets the maximum amount of time in milliseconds to wait for a regular expression to complete before cancelling it and assuming it didn't match.")]
         public int RegexTimeoutMilliseconds = 3000;
-
-        [Ignore]
-        public IsMatchProvider MatchProvider = (i, p, o, t) => Regex.IsMatch(i, p, o, t);
+        internal IsMatchProvider MatchProvider = (i, p, o, t) => Regex.IsMatch(i, p, o, t);
         #endregion Fields
 
         #region Properties
@@ -53,10 +43,15 @@ namespace GrassFPS.Settings
         #endregion Properties
 
         #region Methods
-        public bool IsMatch(string input, string pattern) => Regex.IsMatch(input, pattern, RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
-        public Match Match(string input, string pattern) => Regex.Match(input, pattern, RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
-        public MatchCollection Matches(string input, string pattern) => Regex.Matches(input, pattern, RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
-        public string Replace(string input, string pattern, string replacement) => Regex.Replace(input, pattern, replacement, RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
+        /// <inheritdoc cref="Regex.IsMatch(string, string)"/>
+        public bool IsMatch(string input, string pattern) => Regex.IsMatch(input, pattern, System.Text.RegularExpressions.RegexOptions.Singleline | RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
+        /// <inheritdoc cref="Regex.Match(string, string)"/>
+        public Match Match(string input, string pattern) => Regex.Match(input, pattern, System.Text.RegularExpressions.RegexOptions.Singleline | RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
+        /// <inheritdoc cref="Regex.Matches(string, string)"/>
+        public MatchCollection Matches(string input, string pattern) => Regex.Matches(input, pattern, System.Text.RegularExpressions.RegexOptions.Singleline | RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
+        /// <inheritdoc cref="Regex.Replace(string, string, string)"/>
+        public string Replace(string input, string pattern, string replacement) => Regex.Replace(input, pattern, replacement, System.Text.RegularExpressions.RegexOptions.Singleline | RegexOptions.CalculateValueFrom(DefaultRegexOptions).ToRegexOptions(), this.RegexTimeout);
+        /// <inheritdoc cref="Regex.Replace(string, string)"/>
         public string Replace(string input, string pattern) => this.Replace(input, pattern, string.Empty);
         #endregion Methods
     }

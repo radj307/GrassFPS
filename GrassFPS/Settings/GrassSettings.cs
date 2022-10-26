@@ -7,6 +7,7 @@ using Mutagen.Bethesda.Plugins.Records;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace GrassFPS.Settings
 {
@@ -28,7 +29,7 @@ namespace GrassFPS.Settings
             WavePeriod = new();
             Flags = new();
         }
-        public GrassSettings(string identifier = "", RecordFilters<Grass, IGrassGetter>? filters = null, short? density = null, short? minSlope = null, short? maxSlope = null, ushort? unitsFromWater = null, Grass.UnitsFromWaterTypeEnum? unitsFromWaterType = null, float? positionRange = null, float? heightRange = null, float? colorRange = null, float? wavePeriod = null, Grass.Flag? flags = null)
+        public GrassSettings(string identifier = "", RecordFilters<Grass, IGrassGetter>? filters = null, short? density = null, short? minSlope = null, short? maxSlope = null, ushort? unitsFromWater = null, Grass.UnitsFromWaterTypeEnum? unitsFromWaterType = null, float? positionRange = null, float? heightRange = null, float? colorRange = null, float? wavePeriod = null, IEnumerable<FlagSetting<Grass.Flag>.Operation>? flags = null)
         {
             Identifier = identifier;
             RecordFilters = filters ?? new();
@@ -41,16 +42,14 @@ namespace GrassFPS.Settings
             HeightRange = new(heightRange);
             ColorRange = new(colorRange);
             WavePeriod = new(wavePeriod);
-            Flags = new();
-            if (flags is not null)
-                Flags.FlagChanges.Add(new(FlagOperationType.Overwrite, flags.Value));
+            Flags = new(flags);
         }
         #endregion Constructors
 
         #region Fields
         [Tooltip("A string that is used to represent this category in the log to help with determining which categories applied to a record. This is not used by the patcher.")]
         public string Identifier;
-        [Tooltip("When checked, changes the behaviour of this category so all values are added to the existing value instead of overwriting it.")]
+        [Tooltip("When checked, changes the behaviour of this category so all values are ADDED to the existing value instead of REPLACING them.")]
         public bool OffsetMode = false;
         [Tooltip("For a category to be applied to a record, the record must match any part of the filter at least once. All applicable categories are applied in order to each record.")]
         public RecordFilters<Grass, IGrassGetter> RecordFilters;

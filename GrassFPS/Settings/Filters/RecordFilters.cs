@@ -10,30 +10,44 @@ namespace GrassFPS.Settings.Filters
     public class RecordFilters<T, TGetter> : IFilter<T, TGetter> where T : MajorRecord where TGetter : IMajorRecordGetter
     {
         #region Fields
-        [Tooltip("Applies this category to ALL records that aren't blacklisted globally.")]
-        public bool ApplyToAll = false;
+        /// <summary>
+        /// When <see langword="true"/>, filter is in BLACKLIST mode
+        /// </summary>
+        [SettingName("Apply By Default")]
+        [Tooltip("When checked, this category applies to all records that are NOT matched by this filter.\n" +
+                 "When unchecked, this category only applies to records that ARE matched by this filter.")]
+        public bool IsBlacklist = false;
 
+        [Tooltip("This filter matches the records listed here.")]
         public List<FormLink<T>> FormLinks = new();
-        [SettingName("Editor ID Regular Expressions")]
-        [Tooltip("Applies this category to all records with an editor ID that is matched by one of these regular expressions.\nUses C#'s regular expression engine in Singleline mode.")]
-        public List<string> EditorIDRegexWhitelist = new();
 
-        [Tooltip("If a record was ADDED by one of these plugins, this category will be applied to it.")]
+        [SettingName("Editor ID Regular Expressions")]
+        [Tooltip($"This filter matches records whose Editor IDs contain a (sub)string matching one of these regular expressions.\nSee the `{nameof(TopLevelSettings)}->{nameof(TopLevelSettings.RegexSettings)}` section for more information.")]
+        public List<string> EDIDRegex = new();
+
+        [Tooltip("This filter matches records whose base is defined by one of these mods.")]
         public List<ModKey> Mods = new();
         #endregion Fields
 
         #region Methods
-        private bool IsApplicableTo(IMajorRecordGetter getter)
-            => ApplyToAll
-            || Mods.Contains(getter.FormKey.ModKey)
-            || FormLinks.Any(id => id.FormKey.Equals(getter.FormKey))
-            || EditorIDRegexWhitelist.Any(regex => getter.EditorID is not null && RegexProvider.Default.IsMatch(getter.EditorID, regex));
+        private bool IsMatch(FormKey formKey)
+            => FormLinks.Any(link => link.FormKey.Equals(formKey)) || Mods.Any(modKey => modKey.Equals(formKey.ModKey));
+        private bool IsMatch(string editorID)
+            => EDIDRegex.Any(pattern => RegexProvider.Default.IsMatch(editorID, pattern));
 
-        public bool FilterAllows(T inst) => this.IsApplicableTo(inst);
-        public bool FilterAllows(TGetter getter) => this.IsApplicableTo(getter);
+        private bool HasAnyMatch(IMajorRecordGetter getter)
+        {
+            bool hasAnyMatch = IsMatch(getter.FormKey) || (getter.EditorID is not null && IsMatch(getter.EditorID));
+            return IsBlacklist
+                ? !hasAnyMatch
+                : hasAnyMatch;
+        }
 
-        public bool FilterDisallows(T inst) => !this.IsApplicableTo(inst);
-        public bool FilterDisallows(TGetter getter) => !this.IsApplicableTo(getter);
+        public bool FilterAllows(T inst) => this.HasAnyMatch(inst);
+        public bool FilterDisallows(T inst) => !this.HasAnyMatch(inst);
+
+        public bool FilterAllows(TGetter getter) => this.HasAnyMatch(getter);
+        public bool FilterDisallows(TGetter getter) => !this.HasAnyMatch(getter);
         #endregion Methods
     }
 }
