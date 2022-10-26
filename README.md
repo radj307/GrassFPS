@@ -1,5 +1,8 @@
 # Grass FPS Enhancer
 
+> ### :warning: Beta
+> This is still in beta & bugs should be expected.
+
 Synthesis patcher that improves your framerate by optimizing grass *(`GRAS`)* records in the same way as mods like **Grass FPS Booster** &amp; **Grass on Steroids**. The advantage of using Synthesis is that you don't have to worry about patches, since the resulting plugin is tailored to your specific load order.  
 
 Now you can mix & match grass mods without worrying about optimization patches!
